@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.0",
     "axios": "^1.7.2",
     "framer-motion": "^11.2.10",
     "lucide-react": "^0.395.0",
@@ -17,12 +20,7 @@
     "react-dom": "^18.3.1",
     "react-icons": "^5.2.1",
     "react-router-dom": "^6.23.1",
-    "recharts": "^2.12.7"
-  },
-  "devDependencies": {
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.0",
+    "recharts": "^2.12.7",
     "vite": "^5.2.11"
   }
 }
