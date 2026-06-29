@@ -19,6 +19,10 @@ class CategoryRepository {
     return await Category.create(categoryData);
   }
 
+  async bulkCreate(categoriesData) {
+    return await Category.bulkCreate(categoriesData);
+  }
+
   async update(id, userId, updateData) {
     const category = await this.findByIdAndUser(id, userId);
     if (!category) return null;

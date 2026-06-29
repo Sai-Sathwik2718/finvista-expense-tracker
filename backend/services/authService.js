@@ -14,18 +14,16 @@ class AuthService {
     const user = await userRepository.create({ name, email, password });
 
     const defaultCategories = [
-      { name: 'Food & Dining', color: '#FF6B35', icon: 'utensils', type: 'expense', budget_limit: 2500 },
-      { name: 'Shopping', color: '#3B82F6', icon: 'shopping-bag', type: 'expense', budget_limit: 1500 },
-      { name: 'Housing & Rent', color: '#8B5CF6', icon: 'home', type: 'expense', budget_limit: 3000 },
-      { name: 'Transport', color: '#EC4899', icon: 'car', type: 'expense', budget_limit: 1200 },
-      { name: 'Utilities & Bills', color: '#10B981', icon: 'bolt', type: 'expense', budget_limit: 1800 },
-      { name: 'Entertainment', color: '#F59E0B', icon: 'film', type: 'expense', budget_limit: 2000 },
-      { name: 'Salary & Income', color: '#22C55E', icon: 'wallet', type: 'income', budget_limit: 0 }
+      { user_id: user.id, name: 'Food & Dining', color: '#FF6B35', icon: 'utensils', type: 'expense', budget_limit: 2500 },
+      { user_id: user.id, name: 'Shopping', color: '#3B82F6', icon: 'shopping-bag', type: 'expense', budget_limit: 1500 },
+      { user_id: user.id, name: 'Housing & Rent', color: '#8B5CF6', icon: 'home', type: 'expense', budget_limit: 3000 },
+      { user_id: user.id, name: 'Transport', color: '#EC4899', icon: 'car', type: 'expense', budget_limit: 1200 },
+      { user_id: user.id, name: 'Utilities & Bills', color: '#10B981', icon: 'bolt', type: 'expense', budget_limit: 1800 },
+      { user_id: user.id, name: 'Entertainment', color: '#F59E0B', icon: 'film', type: 'expense', budget_limit: 2000 },
+      { user_id: user.id, name: 'Salary & Income', color: '#22C55E', icon: 'wallet', type: 'income', budget_limit: 0 }
     ];
 
-    for (const cat of defaultCategories) {
-      await categoryRepository.create({ ...cat, user_id: user.id });
-    }
+    await categoryRepository.bulkCreate(defaultCategories);
 
     const token = generateToken({ id: user.id, email: user.email });
     return { user: user.toPublicJSON(), token };

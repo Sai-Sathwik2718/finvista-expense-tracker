@@ -5,7 +5,7 @@ const os = require('os');
 const fs = require('fs');
 require('dotenv').config();
 
-const isVercel = !!process.env.VERCEL;
+const isProduction = process.env.VERCEL || process.env.NODE_ENV === 'production';
 const rawDialect = process.env.DB_DIALECT;
 const host = process.env.DB_HOST || 'localhost';
 const port = process.env.DB_PORT || 3306;
@@ -13,12 +13,12 @@ const user = process.env.DB_USER || 'root';
 const password = process.env.DB_PASS || '';
 const database = process.env.DB_NAME || 'expense_tracker_db';
 
-// On Vercel, if DB_HOST is localhost or no dialect specified, default instantly to SQLite to prevent 5s connection timeouts
-const dialect = (isVercel && (host === 'localhost' || !rawDialect)) ? 'sqlite' : (rawDialect || 'mysql');
+// Determine dialect static instance once at module load time so models never detach
+const dialect = (isProduction && (host === 'localhost' || !rawDialect)) ? 'sqlite' : (rawDialect || 'mysql');
 
 const tempDir = os.tmpdir();
-const sqliteStoragePath = (isVercel || process.env.NODE_ENV === 'production')
-  ? path.join(tempDir, 'database.sqlite')
+const sqliteStoragePath = isProduction
+  ? path.join(tempDir, 'finvista_database.sqlite')
   : path.join(__dirname, '../database.sqlite');
 
 let sequelize;
@@ -33,6 +33,9 @@ if (dialect === 'mysql') {
     define: { timestamps: true, underscored: true }
   });
 } else {
+  if (!fs.existsSync(path.dirname(sqliteStoragePath))) {
+    fs.mkdirSync(path.dirname(sqliteStoragePath), { recursive: true });
+  }
   sequelize = new Sequelize({
     dialect: 'sqlite',
     storage: sqliteStoragePath,
@@ -52,29 +55,16 @@ const connectDB = async () => {
       await sequelize.authenticate();
       console.log(`[Database] Sequelize connected successfully via MySQL dialect.`);
     } catch (error) {
-      console.warn(`[Database] MySQL connection failed (${error.message}). Swapping to SQLite fallback...`);
-      if (!fs.existsSync(path.dirname(sqliteStoragePath))) {
-        fs.mkdirSync(path.dirname(sqliteStoragePath), { recursive: true });
-      }
-      sequelize = new Sequelize({
-        dialect: 'sqlite',
-        storage: sqliteStoragePath,
-        logging: false,
-        define: { timestamps: true, underscored: true }
-      });
-      await sequelize.authenticate();
-      console.log('[Database] SQLite database connected successfully.');
+      console.warn(`[Database] MySQL connection failed (${error.message}).`);
+      throw error;
     }
   } else {
-    if (!fs.existsSync(path.dirname(sqliteStoragePath))) {
-      fs.mkdirSync(path.dirname(sqliteStoragePath), { recursive: true });
-    }
     await sequelize.authenticate();
-    console.log('[Database] SQLite database connected successfully.');
+    console.log(`[Database] SQLite connected successfully at ${sqliteStoragePath}.`);
   }
 };
 
 module.exports = {
-  get sequelize() { return sequelize; },
+  sequelize,
   connectDB
 };
