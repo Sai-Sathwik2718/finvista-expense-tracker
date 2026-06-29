@@ -1,0 +1,37 @@
+const { body, query, param } = require('express-validator');
+
+const registerValidation = [
+  body('name').trim().notEmpty().withMessage('Name is required').isLength({ min: 2, max: 100 }).withMessage('Name must be 2-100 characters'),
+  body('email').trim().notEmpty().withMessage('Email is required').isEmail().withMessage('Must be a valid email address'),
+  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
+];
+
+const loginValidation = [
+  body('email').trim().notEmpty().withMessage('Email is required').isEmail().withMessage('Must be a valid email address'),
+  body('password').notEmpty().withMessage('Password is required')
+];
+
+const transactionValidation = [
+  body('amount').isFloat({ gt: 0 }).withMessage('Amount must be a positive number'),
+  body('type').isIn(['expense', 'income']).withMessage('Type must be expense or income'),
+  body('category_id').isInt({ gt: 0 }).withMessage('Valid category ID is required'),
+  body('date').isISO8601().toDate().withMessage('Valid date is required'),
+  body('description').trim().notEmpty().withMessage('Description is required').isLength({ max: 255 }).withMessage('Description max 255 characters'),
+  body('payment_mode').optional().isIn(['cash', 'card', 'upi', 'bank_transfer', 'other']).withMessage('Invalid payment mode'),
+  body('notes').optional().isString()
+];
+
+const categoryValidation = [
+  body('name').trim().notEmpty().withMessage('Category name is required').isLength({ max: 50 }).withMessage('Name max 50 characters'),
+  body('color').optional().isString(),
+  body('icon').optional().isString(),
+  body('type').optional().isIn(['expense', 'income']),
+  body('budget_limit').optional().isFloat({ min: 0 })
+];
+
+module.exports = {
+  registerValidation,
+  loginValidation,
+  transactionValidation,
+  categoryValidation
+};
