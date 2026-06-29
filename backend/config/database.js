@@ -55,6 +55,14 @@ class MemoryModel {
     Object.assign(this, values);
   }
 
+  static hasMany() {
+    return this;
+  }
+
+  static belongsTo() {
+    return this;
+  }
+
   get(key) {
     if (key) return this._values[key];
     return { ...this._values };
