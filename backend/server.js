@@ -18,9 +18,15 @@ let dbInitPromise = null;
 const initDatabase = async () => {
   if (!dbInitPromise) {
     dbInitPromise = (async () => {
-      await connectDB();
-      await sequelize.sync({ alter: false });
-      console.log('[Database] Synchronized successfully.');
+      try {
+        await connectDB();
+        if (sequelize && typeof sequelize.sync === 'function') {
+          await sequelize.sync({ alter: false });
+          console.log('[Database] Synchronized successfully.');
+        }
+      } catch (err) {
+        console.warn('[Database] Initialization skipped:', err.message);
+      }
     })();
   }
   return dbInitPromise;
