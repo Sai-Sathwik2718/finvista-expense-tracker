@@ -64,7 +64,8 @@ const TopBar = ({ title = 'Financial Intelligence', onMenuClick }) => {
         <button type="button" className="menu-trigger" onClick={onMenuClick} title="Open navigation">
           <Menu size={20} />
         </button>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', minWidth: 0 }}>
+
+        <div className="topbar-title-group">
           <h1 className="topbar-title">{title}</h1>
           <span className="topbar-status">
             <ShieldCheck size={14} /> FinVista Session
