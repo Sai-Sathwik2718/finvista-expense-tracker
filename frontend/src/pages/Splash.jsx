@@ -5,24 +5,9 @@ import { PieChart, ArrowRight, Shield, TrendingUp, Cpu } from 'lucide-react';
 
 const Splash = () => {
   return (
-    <div style={{
-      minHeight: '100vh',
-      backgroundColor: 'var(--bg-main)',
-      display: 'flex',
-      flexDirection: 'column',
-      position: 'relative',
-      overflow: 'hidden'
-    }}>
-      <header style={{
-        padding: '1.5rem 3rem',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        maxWidth: '1400px',
-        margin: '0 auto',
-        width: '100%'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+    <div className="splash-page">
+      <header className="splash-header">
+        <div className="brand-row">
           <div style={{
             width: '40px',
             height: '40px',
@@ -38,22 +23,13 @@ const Splash = () => {
           <h2 style={{ fontSize: '1.4rem', color: 'var(--text-primary)', margin: 0 }}>FinVista</h2>
         </div>
 
-        <div style={{ display: 'flex', gap: '1rem' }}>
+        <div className="hero-actions">
           <Link to="/login" className="btn btn-secondary">Sign In</Link>
           <Link to="/register" className="btn btn-primary">Get Started</Link>
         </div>
       </header>
 
-      <main style={{
-        flex: 1,
-        maxWidth: '1200px',
-        margin: '0 auto',
-        padding: '4rem 2rem',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        textAlign: 'center'
-      }}>
+      <main className="splash-hero">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -94,11 +70,11 @@ const Splash = () => {
             Real-time monthly category budget alerts, automated notification tracking, and compliance PDF/Excel reporting.
           </p>
 
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <Link to="/register" className="btn btn-primary" style={{ padding: '0.85rem 2rem', fontSize: '1rem' }}>
+          <div className="hero-buttons">
+            <Link to="/register" className="btn btn-primary hero-cta-button" style={{ padding: '0.85rem 2rem', fontSize: '1rem' }}>
               Launch Workstation <ArrowRight size={20} />
             </Link>
-            <Link to="/login" className="btn btn-secondary" style={{ padding: '0.85rem 2rem', fontSize: '1rem' }}>
+            <Link to="/login" className="btn btn-secondary hero-cta-button" style={{ padding: '0.85rem 2rem', fontSize: '1rem' }}>
               Demo Portal
             </Link>
           </div>

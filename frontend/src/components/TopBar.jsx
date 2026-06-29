@@ -3,9 +3,9 @@ import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sun, Moon, Bell, ShieldCheck, CheckCheck, AlertCircle, AlertTriangle, Info, CheckCircle2 } from 'lucide-react';
+import { Sun, Moon, Bell, ShieldCheck, CheckCheck, AlertCircle, AlertTriangle, Info, CheckCircle2, Menu } from 'lucide-react';
 
-const TopBar = ({ title = 'Financial Intelligence' }) => {
+const TopBar = ({ title = 'Financial Intelligence', onMenuClick }) => {
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
 
@@ -59,98 +59,42 @@ const TopBar = ({ title = 'Financial Intelligence' }) => {
   };
 
   return (
-    <header style={{
-      height: '70px',
-      backgroundColor: 'var(--bg-surface)',
-      borderBottom: '1px solid var(--border-light)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '0 2rem',
-      position: 'sticky',
-      top: 0,
-      zIndex: 90,
-      boxShadow: 'var(--shadow-sm)'
-    }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        <h1 style={{ fontSize: '1.4rem', margin: 0, color: 'var(--text-primary)' }}>{title}</h1>
-        <span style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '0.35rem',
-          padding: '0.2rem 0.6rem',
-          borderRadius: 'var(--radius-full)',
-          backgroundColor: 'var(--status-success-bg)',
-          color: 'var(--status-success)',
-          fontSize: '0.75rem',
-          fontWeight: 600
-        }}>
-          <ShieldCheck size={14} /> FinVista Session
-        </span>
+    <header className="topbar">
+      <div className="topbar-left">
+        <button type="button" className="menu-trigger" onClick={onMenuClick} title="Open navigation">
+          <Menu size={20} />
+        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', minWidth: 0 }}>
+          <h1 className="topbar-title">{title}</h1>
+          <span className="topbar-status">
+            <ShieldCheck size={14} /> FinVista Session
+          </span>
+        </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-        {/* Theme Toggle Button */}
+      <div className="topbar-actions">
         <button
           onClick={toggleTheme}
-          style={{
-            background: 'var(--bg-surface-hover)',
-            border: '1px solid var(--border-light)',
-            color: 'var(--text-primary)',
-            padding: '0.5rem',
-            borderRadius: 'var(--radius-sm)',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
+          className="icon-button"
           title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
         >
           {theme === 'light' ? <Moon size={18} /> : <Sun size={18} color="#FF6B35" />}
         </button>
 
-        {/* Notification Bell Container */}
-        <div style={{ position: 'relative' }}>
+        <div className="notification-root">
           <button
             onClick={() => setIsPanelOpen(!isPanelOpen)}
-            style={{
-              background: 'var(--bg-surface-hover)',
-              border: '1px solid var(--border-light)',
-              color: 'var(--text-primary)',
-              padding: '0.5rem',
-              borderRadius: 'var(--radius-sm)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'relative'
-            }}
+            className="icon-button"
             title="Notifications Panel"
           >
             <Bell size={18} />
             {unreadCount > 0 && (
-              <span style={{
-                position: 'absolute',
-                top: '-4px',
-                right: '-4px',
-                backgroundColor: 'var(--status-danger)',
-                color: '#FFFFFF',
-                fontSize: '0.7rem',
-                fontWeight: 700,
-                borderRadius: 'var(--radius-full)',
-                minWidth: '16px',
-                height: '16px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '0 4px'
-              }}>
+              <span className="notification-badge">
                 {unreadCount}
               </span>
             )}
           </button>
 
-          {/* Slide-out Notification Panel */}
           <AnimatePresence>
             {isPanelOpen && (
               <motion.div
@@ -158,18 +102,7 @@ const TopBar = ({ title = 'Financial Intelligence' }) => {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
                 transition={{ duration: 0.15 }}
-                style={{
-                  position: 'absolute',
-                  right: 0,
-                  top: '50px',
-                  width: '340px',
-                  backgroundColor: 'var(--bg-surface)',
-                  border: '1px solid var(--border-light)',
-                  borderRadius: 'var(--radius-md)',
-                  boxShadow: 'var(--shadow-lg)',
-                  zIndex: 1000,
-                  overflow: 'hidden'
-                }}
+                className="notification-panel"
               >
                 <div style={{
                   padding: '0.85rem 1rem',

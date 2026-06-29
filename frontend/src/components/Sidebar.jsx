@@ -1,19 +1,19 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { 
-  LayoutDashboard, 
-  ArrowLeftRight, 
-  Tags, 
-  FileSpreadsheet, 
-  TrendingUp, 
-  User, 
+import {
+  LayoutDashboard,
+  ArrowLeftRight,
+  Tags,
+  FileSpreadsheet,
+  TrendingUp,
+  User,
   LogOut,
-  Sparkles,
-  PieChart
+  PieChart,
+  X
 } from 'lucide-react';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, onClose }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -32,20 +32,9 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside style={{
-      width: '260px',
-      backgroundColor: 'var(--bg-sidebar)',
-      color: '#FFFFFF',
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100vh',
-      position: 'sticky',
-      top: 0,
-      zIndex: 100,
-      borderRight: '1px solid rgba(255,255,255,0.05)'
-    }}>
+    <aside className={`sidebar ${isOpen ? 'sidebar--open' : ''}`}>
       {/* Brand Header */}
-      <div style={{ padding: '1.75rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+      <div style={{ padding: '1.75rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem', width: '100%' }}>
         <div style={{
           width: '38px',
           height: '38px',
@@ -58,10 +47,13 @@ const Sidebar = () => {
         }}>
           <PieChart size={22} color="#FFFFFF" />
         </div>
-        <div>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <h2 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em', color: '#FFFFFF', margin: 0 }}>FinVista</h2>
           <span style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Financial Operating System</span>
         </div>
+        <button type="button" className="sidebar-close-btn" onClick={onClose} title="Close navigation">
+          <X size={18} />
+        </button>
       </div>
 
       {/* Navigation Links */}
@@ -72,6 +64,7 @@ const Sidebar = () => {
             <NavLink
               key={item.path}
               to={item.path}
+              onClick={onClose}
               style={({ isActive }) => ({
                 display: 'flex',
                 alignItems: 'center',

@@ -27,15 +27,8 @@ const Login = () => {
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      backgroundColor: 'var(--bg-main)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '1.5rem'
-    }}>
-      <div className="aurax-card" style={{ width: '100%', maxWidth: '440px', padding: '2.5rem' }}>
+    <div className="auth-page">
+      <div className="aurax-card auth-card">
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <div style={{
             width: '44px',
