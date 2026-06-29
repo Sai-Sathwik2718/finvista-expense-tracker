@@ -197,7 +197,10 @@ class MemorySequelize {
 
   define(name, attributes, options = {}) {
     const Model = class extends MemoryModel {};
-    Model.name = name;
+    Object.defineProperty(Model, 'name', {
+      value: name,
+      configurable: true
+    });
     Model.attributes = attributes;
     Model.options = options;
     Model._records = [];
