@@ -13,6 +13,21 @@ const { errorResponse } = require('./utils/apiResponse');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Middleware to ensure Database is connected and synced on serverless invocations
+let dbInitialized = false;
+const ensureDbConnected = async (req, res, next) => {
+  if (!dbInitialized) {
+    try {
+      await connectDB();
+      await sequelize.sync({ alter: false });
+      dbInitialized = true;
+    } catch (err) {
+      console.error('[Serverless DB Init Error]:', err);
+    }
+  }
+  next();
+};
+
 // Security Middlewares
 app.use(helmet());
 app.use(cors({
@@ -40,6 +55,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
+// Ensure DB middleware on all API routes
+app.use('/api', ensureDbConnected);
+
 // Health Check Endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'success', message: 'FinVista Enterprise API is running smoothly' });
@@ -56,12 +74,13 @@ app.use((req, res) => {
 // Global Error Handler Middleware
 app.use(errorHandler);
 
-// Start Server & Sync DB if running standalone
+// Standalone local listener
 if (process.env.NODE_ENV !== 'production' || require.main === module) {
   const startServer = async () => {
     try {
       await connectDB();
       await sequelize.sync({ alter: false });
+      dbInitialized = true;
       console.log('[Database] Models synchronized successfully.');
 
       app.listen(PORT, () => {
