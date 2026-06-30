@@ -21,3 +21,5 @@ backend/database.sqlite
 Thumbs.db
 .vscode/
 .idea/
+
+.vercel
