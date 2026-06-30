@@ -25,6 +25,7 @@ class MemoryInstance {
   constructor(model, values = {}) {
     this._model = model;
     this._values = { ...values };
+    this._changed = {};
     Object.assign(this, values);
   }
 
@@ -33,13 +34,30 @@ class MemoryInstance {
     return { ...this._values };
   }
 
+  changed(key) {
+    if (key) {
+      return this._changed && !!this._changed[key];
+    }
+    return Object.keys(this._changed || {});
+  }
+
   async update(values = {}) {
+    this._changed = {};
+    for (const [key, val] of Object.entries(values)) {
+      if (this._values[key] !== val) {
+        this._changed[key] = true;
+      }
+      this[key] = val;
+    }
     const hooks = this._model.options?.hooks || {};
     if (hooks.beforeUpdate) {
       await hooks.beforeUpdate(this);
     }
-    Object.assign(this._values, values);
-    Object.assign(this, values);
+    for (const key of Object.keys(this)) {
+      if (!key.startsWith('_') && typeof this[key] !== 'function') {
+        this._values[key] = this[key];
+      }
+    }
     return this;
   }
 
@@ -52,6 +70,7 @@ class MemoryInstance {
 class MemoryModel {
   constructor(values = {}) {
     this._values = { ...values };
+    this._changed = {};
     Object.assign(this, values);
   }
 
@@ -68,13 +87,30 @@ class MemoryModel {
     return { ...this._values };
   }
 
+  changed(key) {
+    if (key) {
+      return this._changed && !!this._changed[key];
+    }
+    return Object.keys(this._changed || {});
+  }
+
   async update(values = {}) {
+    this._changed = {};
+    for (const [key, val] of Object.entries(values)) {
+      if (this._values[key] !== val) {
+        this._changed[key] = true;
+      }
+      this[key] = val;
+    }
     const hooks = this.constructor.options?.hooks || {};
     if (hooks.beforeUpdate) {
       await hooks.beforeUpdate(this);
     }
-    Object.assign(this._values, values);
-    Object.assign(this, values);
+    for (const key of Object.keys(this)) {
+      if (!key.startsWith('_') && typeof this[key] !== 'function') {
+        this._values[key] = this[key];
+      }
+    }
     return this;
   }
 
